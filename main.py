@@ -21,7 +21,7 @@ def process_browser_log_entry(entry):
     return response
 
 
-SCROLL_PAUSE_TIME = 0.5
+SCROLL_PAUSE_TIME = 1
 # Get scroll height
 last_height = driver.execute_script("return document.body.scrollHeight")
 time.sleep(1)
@@ -66,12 +66,15 @@ for i in scroll:
     html = page.text
     try:
         for j in range(0, 30):
-            video = json.loads(html)["items"][j]["video"]["downloadAddr"]
-            id = json.loads(html)["items"][j]["id"]
-            r = requests.get(video)
-            open(name + "/" + str(id) + ".mp4", 'wb').write(r.content)
-            print("downloading " + video + " with id: " + str(id))
-            time.sleep(1)
+                video = json.loads(html)["items"][j]["video"]["downloadAddr"]
+                id = json.loads(html)["items"][j]["id"]
+                if os.path.isfile(name + "/" + str(id) + ".mp4"):
+                    pass
+                    print("video already exists wiht id: " + str(id))
+                else:
+                    r = requests.get(video)
+                    open(name + "/" + str(id) + ".mp4", 'wb').write(r.content)
+                    print("downloading " + video + " with id: " + str(id))
     except:
         print("error")
         
